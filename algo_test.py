@@ -118,7 +118,7 @@ def run_compute(photographes,type_seance,seance_adjacente=1,seance_adjacente_2=1
     plt.show()
 def on_button_clicked(b,photographes,type_seance):
     clear_output()
-     display(HTML('''<style>
+    display(HTML('''<style>
     .widget-label { min-width: 20ex !important; }
     .slide-container { min-width: 30ex !important; }
     div.p-Widget { min-width: 50ex !important; }
