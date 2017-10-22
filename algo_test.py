@@ -83,7 +83,7 @@ def run_compute(photographes,type_seance,seance_adjacente=1,seance_adjacente_2=1
     notes = calcul_notes_coef(photographes,type_seance,seance_adjacente=seance_adjacente,seance_adjacente_2=seance_adjacente_2,type_favori=type_favori)
     total = float(sum(notes.values()))
     results =  {photographe: note/total for photographe,note in notes.items() }
-    df = pd.DataFrame(data={'photographe':results.keys(),"proba assignation":results.values()}).sort_values('photographe')
+    df = pd.DataFrame(data={'photographe':list(results.keys()),"proba assignation":list(results.values())}).sort_values('photographe')
 
     ax=sns.barplot(y="proba assignation",x='photographe',data=df,palette=sns.color_palette('hls',len(notes.keys())))
     autolabel2(ax, labels=df["proba assignation"].values, height_factor=1.02)
@@ -107,34 +107,24 @@ def assign_variable(var_name):
 def create_slider(var_name,desc='',default=0):
     globals()[var_name] = globals().get(var_name,default)
     return interact(assign_variable(var_name),x=widgets.FloatSlider(min=1,max=6,step=0.1,value=globals()[var_name],description=desc))
+def run_compute(photographes,type_seance,seance_adjacente=1,seance_adjacente_2=1,type_favori=1):
+    notes = calcul_notes_coef(photographes,type_seance,seance_adjacente=seance_adjacente,seance_adjacente_2=seance_adjacente_2,type_favori=type_favori)
+    total = float(sum(notes.values()))
+    results =  {photographe: note/total for photographe,note in notes.items() }
+    df = pd.DataFrame(data={'photographe':list(results.keys()),"proba assignation":list(results.values())}).sort_values('photographe')
+
+    ax=sns.barplot(y="proba assignation",x='photographe',data=df,palette=sns.color_palette('hls',len(notes.keys())))
+    autolabel2(ax, labels=df["proba assignation"].values, height_factor=1.02)
+    plt.show()
 def on_button_clicked(b,photographes,type_seance):
     clear_output()
-    generate_display(photographes,type_seance)
+    print('Photographes')
+    display(pd.DataFrame(photographes).fillna(False))
+    #generate_display_compute(photographes,type_seance)
     print('Paramètres 1')
     run_compute(photographes,type_seance,seance_adjacenteA,seance_adjacente_2A,type_favoriA)
     print('Paramètres 2')
     run_compute(photographes,type_seance,seance_adjacenteB,seance_adjacente_2B,type_favoriB)
-
-def generate_display(photographes,type_seance):
-    display(HTML('''<style>
-    .widget-label { min-width: 20ex !important; }
-    .slide-container { min-width: 30ex !important; }
-    div.p-Widget { min-width: 50ex !important; }
-</style>'''))
-    print('Photographes')
-    display(pd.DataFrame(photographes).fillna(False))
-    print('Paramètres 1')
-    create_slider('seance_adjacenteA','seance_adjacente',1)
-    create_slider('seance_adjacente_2A','seance_adjacente_2',1)
-    create_slider('type_favoriA','type_favori',1)
-    print('Paramètres 2')
-    create_slider('seance_adjacenteB','seance_adjacente',1)
-    create_slider('seance_adjacente_2B','seance_adjacente_2',1)
-    create_slider('type_favoriB','type_favori',1)
-    button = widgets.Button(description="Run")
-    display(button)
-    button.on_click(lambda b: on_button_clicked(b,photographes,type_seance))
-
 def generate_display_compute(photographes,type_seance):
     display(HTML('''<style>
     .widget-label { min-width: 20ex !important; }
@@ -143,17 +133,19 @@ def generate_display_compute(photographes,type_seance):
 </style>'''))
     print('Photographes')
     display(pd.DataFrame(photographes).fillna(False))
-    print('Paramètres 1')
+    interact(lambda x: None,x=widgets.BoundedIntText(value=1,description='Parametres:', disabled=True))
     create_slider('seance_adjacenteA','seance_adjacente',1)
     create_slider('seance_adjacente_2A','seance_adjacente_2',1)
     create_slider('type_favoriA','type_favori',1)
-    print('Paramètres 2')
+    interact(lambda x: None,x=widgets.BoundedIntText(value=2,description='Parametres:', disabled=True))
     create_slider('seance_adjacenteB','seance_adjacente',1)
     create_slider('seance_adjacente_2B','seance_adjacente_2',1)
     create_slider('type_favoriB','type_favori',1)
     button = widgets.Button(description="Run")
     display(button)
     button.on_click(lambda b: on_button_clicked(b,photographes,type_seance))
+
+
 # results = simulate(data,seance)
 # df = pd.DataFrame(data={'photographe':results.keys(),'assignations':results.values()}).sort_values('photographe')
 # ax=sns.barplot(y='assignations',x='photographe',data=df)
