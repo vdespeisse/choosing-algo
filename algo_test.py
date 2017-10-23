@@ -10,19 +10,7 @@ from IPython.display import display, HTML, clear_output
 
 from ipywidgets import interact, interactive, fixed, interact_manual
 import ipywidgets as widgets
-## Seance a 14H
-# Photographe A & B: seance a 15h
-# Photographe C: seance a 16h
-# Photographe D & E: pas de seances dans la journée
 
-data =   [
-    {'nom':'A', 'note_ever':10, 'prox':2, 'favorite':'couple'},
-    {'nom':'B', 'note_ever':5, 'prox':2, 'favorite':'solo'},
-    # {'nom':'C', 'note_ever':5, 'prox':1, 'favorite':'solo'},
-    # {'nom':'D', 'note_ever':10, 'prox':0, 'favorite':'solo'},
-    # {'nom':'E', 'note_ever':1, 'prox':0, 'favorite':'solo'},
-]
-seance = {'type':'solo'}
 def calcul_notes(photographes,type_seance,params):
     return {k: v.get('note_ever',0)+int(v.get('seance_adjacente',False))*params.get('seance_adjacente',0) \
                 + int(v.get('seance_adjacente_2',False))*params.get('seance_adjacente_2',0) \
@@ -43,7 +31,7 @@ def assign(notes_photographes):
 
 def simulate(notes_photographes,n=10000):
     results = {photographe: 0 for photographe in notes_photographes.keys() }
-    for i in xrange(n):
+    for i in range(n):
         p = assign(notes_photographes)
         results[p] += 1
     return results
